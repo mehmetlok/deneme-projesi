@@ -2,6 +2,8 @@ name: APK derle
 on:
   push:
   workflow_dispatch:
+permissions:
+  contents: write
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -24,3 +26,11 @@ jobs:
         with:
           name: HizliOku-apk
           path: HizliOku.apk
+      - name: APK'yı repoya ekle (dist/)
+        run: |
+          mkdir -p dist && cp HizliOku.apk dist/HizliOku.apk
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add dist/HizliOku.apk
+          git commit -m "APK derlemesi ${GITHUB_SHA::7} [skip ci]" || exit 0
+          git push
